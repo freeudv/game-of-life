@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <script>
+    function createGrid(size, randomize = false) {
+      // создать массив определенного размера (new Array(size))
+      // внутри массива создать еще массивы
+      // в каждый элемент массива поместить клетку
+      // либо в разнобой (50% что клетка жива, 50% что клетка мертва)
+      // либо начальное состояние (клетка мертва)
+      // вернуть сетку
+      let grid = [];
+
+      for (let i = 0; i < size; i++) {
+        let row = [];
+
+        for (let j = 0; j < size; j++) {
+          randomize
+            ? row.push(Math.floor(Math.random() * 2) ? true : false)
+            : row.push(false);
+        }
+
+        grid.push(row);
+      }
+
+      return grid;
+    }
+    const grid = createGrid(5, true);
+    console.log(grid);
+
+    function countNeighbors(grid, cell) {
+      return Math.floor(Math.random() * 9);
+
+    }
+
+    function computeGrid(grid) {
+      // создать новую сетку
+      // взяв одну клетку текущей сетки
+      // посчитать количество соседей
+      // изменить состояние клетки в новой сетке согласно правилам игры
+      // вернуть новую сетку
+      let newGrid = grid.slice();
+
+      for (let i = 0; i < grid.length; i++) {
+        let row = grid[i];
+
+        for (let j = 0; j < row.length; j++) {
+          let neighbords = countNeighbors(grid, [i, j]);
+
+          console.log(neighbords);
+
+          if (neighbords < 2 || neighbords > 3) {
+            newGrid[i][j] = false;
+
+          } else if (neighbords === 3) {
+            newGrid[i][j] = true;
+
+          } else {
+            newGrid[i][j] = grid[i][j]
+          };
+        }
+      }
+
+      return newGrid;
+    }
+
+
+    const newGrid = computeGrid(grid);
+    console.log(newGrid);
+  </script>
+</body>
+
+</html>
