@@ -19,6 +19,7 @@ function createCell(row, col, alive = false) {
  * @returns {number} - Количество соседей
  */
 function countNeighbors(grid, cell) {
+
   // начнем с нуля
   // +1 если сверху есть живая клетка
   // +1 если сверху слева есть живая клетка
@@ -29,12 +30,22 @@ function countNeighbors(grid, cell) {
   // +1 если снизу справа есть живая клетка
   // +1 если снизу справа есть живая клетка
   // вернуть количество соседей
+  let { row, col } = cell;
+  let length = grid.length - 1;
   let neighbors = 0;
-  // grid , cell = [2,4];
 
-  grid.forEach(row => {
-    row.forEach(cell => {});
-  });
+  if ((row - 1 > 0) && (grid[row - 1][col].alive)) neighbors += 1;
+  if ((row - 1 > 0) && (col - 1 > 0) && (grid[row - 1][col - 1].alive)) neighbors += 1;
+  if ((row - 1 > 0) && (col + 1 < length) && (grid[row - 1][col + 1].alive)) neighbors += 1;
+
+  if ((col - 1 > 0) && (grid[row][col - 1].alive)) neighbors += 1;
+  if ((col + 1 < length) && (grid[row][col + 1].alive)) neighbors += 1;
+
+  if ((row + 1 < length) && (grid[row + 1][col].alive)) neighbors += 1;
+  if ((row + 1 < length) && (col - 1 > 0) && (grid[row + 1][col - 1].alive)) neighbors += 1;
+  if ((row + 1 < length) && (col + 1 < length) && (grid[row + 1][col + 1].alive)) neighbors += 1;
+
+  return neighbors;
 }
 
 /**
@@ -56,9 +67,9 @@ function createGrid(size, randomize = false) {
     let row = [];
 
     for (let j = 0; j < size; j++) {
-      randomize
-        ? row.push(Math.floor(Math.random() * 2) ? true : false)
-        : row.push(false);
+      let alive = !randomize ? false : Math.floor(Math.random() * 2) ? true : false;
+
+      row.push(createCell(i, j, alive));
     }
 
     grid.push(row);
@@ -84,15 +95,19 @@ function computeGrid(grid) {
     let row = grid[i];
 
     for (let j = 0; j < row.length; j++) {
-      let neighbords = countNeighbors(grid, [i, j]);
+
+      let cell = grid[i][j];
+      let neighbords = countNeighbors(grid, cell);
 
       if (neighbords < 2 || neighbords > 3) {
-        newGrid[i][j] = false;
+        newGrid[i][j] = createCell(i, j, false);
+
       } else if (neighbords === 3) {
-        newGrid[i][j] = true;
+        newGrid[i][j] = createCell(i, j, true);
+
       } else {
         newGrid[i][j] = grid[i][j];
-      }
+      };
     }
   }
 
@@ -111,6 +126,18 @@ function renderGrid(grid) {
   // иначе добавить '  ' (два пробела)
   // если клетка последняя в ряду, перейти на следующую строку (\r\n)
   // вернуть готовую строку
+  let str = [];
+  let length = grid.length;
+
+  for (let i = 0; i < length; i++) {
+    for (let j = 0; j < length; j++) {
+      let renderAlave = grid[i][j].alive ? '* ' : "  ";
+      str.push(renderAlave);
+      if (j === length - 1) str.push('\r\n');
+    }
+  }
+
+  return str.join('');
 }
 
 module.exports = {
