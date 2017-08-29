@@ -4,7 +4,7 @@ const { createGrid, computeGrid, renderGrid } = require("./grid");
 
 module.exports = ({ size }) => {
   // 1. создать сетку определенного размера с клетками в случайном порядке
-  let grid = createGrid(size, true);
+  let grid = createGrid(size, false);
 
   function play() {
     // 2. высчитать новую сетку на основе текущей

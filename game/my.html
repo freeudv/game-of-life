@@ -16,7 +16,7 @@
       return { row, col, alive };
     }
 
-    function createGrid(size, randomize = true) {
+    function createGrid(size, randomize = false) {
       // создать массив определенного размера (new Array(size))
       // внутри массива создать еще массивы
       // в каждый элемент массива поместить клетку
@@ -42,6 +42,12 @@
 
         grid.push(row);
       }
+
+      grid[0][1] = { row: 0, col: 1, alive: true };
+      grid[1][2] = { row: 1, col: 2, alive: true };
+      grid[2][0] = { row: 2, col: 0, alive: true };
+      grid[2][1] = { row: 2, col: 1, alive: true };
+      grid[2][2] = { row: 2, col: 2, alive: true };
 
       return grid;
     }

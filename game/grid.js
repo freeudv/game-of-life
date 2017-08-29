@@ -75,6 +75,12 @@ function createGrid(size, randomize = false) {
     grid.push(row);
   }
 
+  grid[0][1] = { row: 0, col: 1, alive: true };
+  grid[1][2] = { row: 1, col: 2, alive: true };
+  grid[2][0] = { row: 2, col: 0, alive: true };
+  grid[2][1] = { row: 2, col: 1, alive: true };
+  grid[2][2] = { row: 2, col: 2, alive: true };
+
   return grid;
 }
 
