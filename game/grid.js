@@ -52,7 +52,7 @@ function countNeighbors(grid, cell) {
  * @param {boolean} [randomize=false] - Случайное определение состояния клеток в сетке
  * @returns {[[{row: number, col: number, alive: boolean}]]} - Сетка
  */
-function createGrid(size, randomize = true) {
+function createGrid(size, randomize = false) {
   // создать массив определенного размера (new Array(size))
   // внутри массива создать еще массивы
   // в каждый элемент массива поместить клетку
