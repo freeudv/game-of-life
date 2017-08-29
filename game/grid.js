@@ -19,7 +19,6 @@ function createCell(row, col, alive = false) {
  * @returns {number} - Количество соседей
  */
 function countNeighbors(grid, cell) {
-
   // начнем с нуля
   // +1 если сверху есть живая клетка
   // +1 если сверху слева есть живая клетка
@@ -30,22 +29,21 @@ function countNeighbors(grid, cell) {
   // +1 если снизу справа есть живая клетка
   // +1 если снизу справа есть живая клетка
   // вернуть количество соседей
-  let { row, col } = cell;
-  let length = grid.length - 1;
-  let neighbors = 0;
 
-  if ((row - 1 > 0) && (grid[row - 1][col].alive)) neighbors += 1;
-  if ((row - 1 > 0) && (col - 1 > 0) && (grid[row - 1][col - 1].alive)) neighbors += 1;
-  if ((row - 1 > 0) && (col + 1 < length) && (grid[row - 1][col + 1].alive)) neighbors += 1;
+  const { row, col } = cell;
+  const len = grid.length - 1;
+  let aliveNeighbords = 0;
 
-  if ((col - 1 > 0) && (grid[row][col - 1].alive)) neighbors += 1;
-  if ((col + 1 < length) && (grid[row][col + 1].alive)) neighbors += 1;
+  for (let i = row - 1; i <= row + 1; i++) {
+    for (let j = col - 1; j <= col + 1; j++) {
+      if ((i === row && j === col) || i < 0 || j < 0 || i > len || j > len)
+        continue;
 
-  if ((row + 1 < length) && (grid[row + 1][col].alive)) neighbors += 1;
-  if ((row + 1 < length) && (col - 1 > 0) && (grid[row + 1][col - 1].alive)) neighbors += 1;
-  if ((row + 1 < length) && (col + 1 < length) && (grid[row + 1][col + 1].alive)) neighbors += 1;
+      if (grid[i][j].alive) aliveNeighbords += 1;
+    }
+  }
 
-  return neighbors;
+  return aliveNeighbords;
 }
 
 /**
@@ -54,7 +52,7 @@ function countNeighbors(grid, cell) {
  * @param {boolean} [randomize=false] - Случайное определение состояния клеток в сетке
  * @returns {[[{row: number, col: number, alive: boolean}]]} - Сетка
  */
-function createGrid(size, randomize = false) {
+function createGrid(size, randomize = true) {
   // создать массив определенного размера (new Array(size))
   // внутри массива создать еще массивы
   // в каждый элемент массива поместить клетку
@@ -67,7 +65,9 @@ function createGrid(size, randomize = false) {
     let row = [];
 
     for (let j = 0; j < size; j++) {
-      let alive = !randomize ? false : Math.floor(Math.random() * 2) ? true : false;
+      let alive = !randomize
+        ? false
+        : Math.floor(Math.random() * 2) ? true : false;
 
       row.push(createCell(i, j, alive));
     }
@@ -89,29 +89,31 @@ function computeGrid(grid) {
   // посчитать количество соседей
   // изменить состояние клетки в новой сетке согласно правилам игры
   // вернуть новую сетку
-  let newGrid = grid.slice();
+  const computedGrid = [];
 
   for (let i = 0; i < grid.length; i++) {
-    let row = grid[i];
+    const row = [];
 
-    for (let j = 0; j < row.length; j++) {
-
-      let cell = grid[i][j];
-      let neighbords = countNeighbors(grid, cell);
+    for (let j = 0; j < grid.length; j++) {
+      const cell = grid[i][j];
+      const neighbords = countNeighbors(grid, cell);
+      let alive;
 
       if (neighbords < 2 || neighbords > 3) {
-        newGrid[i][j] = createCell(i, j, false);
-
+        alive = false;
       } else if (neighbords === 3) {
-        newGrid[i][j] = createCell(i, j, true);
-
+        alive = true;
       } else {
-        newGrid[i][j] = grid[i][j];
-      };
+        alive = cell.alive;
+      }
+
+      row.push(createCell(i, j, alive));
     }
+
+    computedGrid.push(row);
   }
 
-  return newGrid;
+  return computedGrid;
 }
 
 /**
@@ -131,13 +133,12 @@ function renderGrid(grid) {
 
   for (let i = 0; i < length; i++) {
     for (let j = 0; j < length; j++) {
-      let renderAlave = grid[i][j].alive ? '* ' : "  ";
+      let renderAlave = grid[i][j].alive ? "* " : "  ";
       str.push(renderAlave);
-      if (j === length - 1) str.push('\r\n');
+      if (j === length - 1) str.push("\r\n");
     }
   }
-
-  return str.join('');
+  return str.join("");
 }
 
 module.exports = {
