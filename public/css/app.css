@@ -1,6 +1,7 @@
 body {
   padding: 20px;
   background-color: #0a0a0a;
+  font-family: "Roboto", "Arial", sans-serif;
 }
 
 #grid {
@@ -102,4 +103,11 @@ input[type="range"]::-moz-range-thumb {
   background-color: #00ff00;
   border-radius: 100%;
   cursor: pointer;
+}
+
+span {
+  margin-left: 20px;
+  font-size: 14px;
+  line-height: 40px;
+  color: #00ff00;
 }

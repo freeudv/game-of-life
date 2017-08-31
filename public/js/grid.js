@@ -8,10 +8,6 @@ class Grid {
 
     // доинициализировать свойства в методе `init`
     this.init();
-
-    this.randomize();
-
-    this.next();
   }
 
   init() {
@@ -36,15 +32,13 @@ class Grid {
 
       for (let j = 0; j < this.size; j++) {
         let td = document.createElement("td");
-        let cell = new Cell({ element: td, row: i, col: j });
-
         tr.appendChild(td);
-        row.push(cell);
+
+        row.push(new Cell({ element: td, row: i, col: j }));
       }
 
       table.appendChild(tr);
       this.grid.push(row);
-      this.nextGrid.push(row);
     }
 
     this.element.appendChild(table);
@@ -70,16 +64,15 @@ class Grid {
 
   reset() {
     // привести сетку в исходное состояние
+    this.grid = [];
+
+    this.resetBuffer();
     this.init();
   }
 
   resetBuffer() {
     // привести буфер в исходное состояние
-    this.nextGrid.forEach(row => {
-      row.forEach(cell => {
-        cell._alive = false;
-      });
-    });
+    this.nextGrid = [];
   }
 
   randomize() {
@@ -87,7 +80,7 @@ class Grid {
     this.grid.forEach(row => {
       row.forEach(cell => {
         let random = Math.floor(Math.random() * 2);
-        cell._alive = random ? true : false;
+        cell.alive = random ? true : false;
       });
     });
   }
@@ -95,9 +88,11 @@ class Grid {
   next() {
     // высчитать следующее поколение клеток
     this.grid.forEach(row => {
+      let nextRow = [];
+
       row.forEach(cell => {
         const { row, col } = cell;
-        const neighbords = this.countNeighbors(cell);
+        let neighbords = this.countNeighbors(cell);
         let alive;
 
         if (neighbords < 2 || neighbords > 3) {
@@ -107,14 +102,21 @@ class Grid {
         } else {
           alive = cell.alive;
         }
-        console.log(row, col, neighbords, alive);
-        console.log(this.grid[row][col]);
-        this.nextGrid[row][col]._alive = alive;
-        console.log(this.nextGrid[row][col]._alive);
+
+        nextRow.push(alive);
+      });
+
+      this.nextGrid.push(nextRow);
+    });
+
+    this.grid.forEach(row => {
+      row.forEach(cell => {
+        const { row, col } = cell;
+        cell.alive = this.nextGrid[row][col];
       });
     });
 
-    console.log(this.nextGrid);
     // обнулить буфер
+    this.resetBuffer();
   }
 }
