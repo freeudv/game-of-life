@@ -45,17 +45,27 @@ class Game {
     // изменить содержимое кнопки Play на pause (название икноки)
     // высчитать следующее поколение клеток
     let grid = this.grid.grid;
-    let alive = 0;
-    grid.forEach(row => {
-      row.forEach(cell => {
-        if (cell.alive) alive += 1;
-      });
-    });
-    if (!alive) return;
 
     this.isPlaying = true;
     this.playButton.innerText = "pause";
-    this.timerId = setInterval(() => this.grid.next(), this.interval);
+
+    this.timerId = setInterval(() => {
+      let alive = 0;
+
+      for (let row of grid) {
+        for (let cell of row) {
+          if (cell.alive) alive += 1;
+        }
+      }
+
+      if (!alive) {
+        clearTimeout(this.timerId);
+        this.reset();
+        return;
+      }
+
+      this.grid.next();
+    }, this.interval);
   }
 
   pause() {
@@ -123,7 +133,9 @@ class Game {
     this.interval = this.speedSlider.value;
     document.querySelector("#speed-slider-value").innerText =
       this.speedSlider.value + "ms";
+
     clearTimeout(this.timerId);
+
     if (this.isPlaying) this.play();
   }
 }

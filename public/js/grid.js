@@ -77,12 +77,18 @@ class Grid {
 
   randomize() {
     // определить случайное состояние для сетки
-    this.grid.forEach(row => {
-      row.forEach(cell => {
+    // this.grid.forEach(row => {
+    //   row.forEach(cell => {
+    //     let random = Math.floor(Math.random() * 2);
+    //     cell.alive = random ? true : false;
+    //   });
+    // });
+    for (let row of this.grid) {
+      for (let cell of row) {
         let random = Math.floor(Math.random() * 2);
         cell.alive = random ? true : false;
-      });
-    });
+      }
+    }
   }
 
   next() {
@@ -109,12 +115,18 @@ class Grid {
       this.nextGrid.push(nextRow);
     });
 
-    this.grid.forEach(row => {
-      row.forEach(cell => {
+    // this.grid.forEach(row => {
+    //   row.forEach(cell => {
+    //     const { row, col } = cell;
+    //     cell.alive = this.nextGrid[row][col];
+    //   });
+    // });
+    for (let row of this.grid) {
+      for (let cell of row) {
         const { row, col } = cell;
         cell.alive = this.nextGrid[row][col];
-      });
-    });
+      }
+    }
 
     // обнулить буфер
     this.resetBuffer();
