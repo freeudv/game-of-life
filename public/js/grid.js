@@ -24,6 +24,7 @@ class Grid {
     // продублировать значение в буфере
     // добавить ряд в таблицу
     // добавить таблицу в элемент
+
     let table = document.createElement("table");
 
     for (let i = 0; i < this.size; i++) {
@@ -40,6 +41,20 @@ class Grid {
       table.appendChild(tr);
       this.grid.push(row);
     }
+
+    //Вариант 2
+    // this.grid = Array.from(new Array(this.size), (row, i) => {
+    //   let tr = document.createElement("tr");
+    //   let gridRow = Array.from(new Array(this.size), (cell, j) => {
+    //     let td = document.createElement("td");
+    //     tr.appendChild(td);
+
+    //     return new Cell({ element: td, row: i, col: j })
+    //   })
+
+    //   table.appendChild(tr);
+    //   return gridRow;
+    // })
 
     this.element.appendChild(table);
   }
@@ -77,18 +92,20 @@ class Grid {
 
   randomize() {
     // определить случайное состояние для сетки
-    // this.grid.forEach(row => {
-    //   row.forEach(cell => {
-    //     let random = Math.floor(Math.random() * 2);
-    //     cell.alive = random ? true : false;
-    //   });
-    // });
     for (let row of this.grid) {
       for (let cell of row) {
         let random = Math.floor(Math.random() * 2);
         cell.alive = random ? true : false;
       }
     }
+
+    // Вариант 2
+    // this.grid.forEach(row => {
+    //   row.forEach(cell => {
+    //     let random = Math.floor(Math.random() * 2);
+    //     cell.alive = random ? true : false;
+    //   });
+    // });
   }
 
   next() {
@@ -98,7 +115,7 @@ class Grid {
 
       row.forEach(cell => {
         const { row, col } = cell;
-        let neighbords = this.countNeighbors(cell);
+        const neighbords = this.countNeighbors(cell);
         let alive;
 
         if (neighbords < 2 || neighbords > 3) {
@@ -115,18 +132,39 @@ class Grid {
       this.nextGrid.push(nextRow);
     });
 
-    // this.grid.forEach(row => {
-    //   row.forEach(cell => {
-    //     const { row, col } = cell;
-    //     cell.alive = this.nextGrid[row][col];
-    //   });
-    // });
+    // Вариант 2
+    // this.nextGrid = Array.from(new Array(this.size), (row, i) =>
+    //   Array.from(new Array(this.size), (cell, j) => {
+    //     const computedCell = this.grid[i][j];
+    //     const neighbords = this.countNeighbors(computedCell);
+    //     let alive;
+
+    //     if (neighbords < 2 || neighbords > 3) {
+    //       alive = false;
+    //     } else if (neighbords === 3) {
+    //       alive = true;
+    //     } else {
+    //       alive = computedCell.alive;
+    //     }
+
+    //     return alive;
+    //   }))
+
+    // заменить текущее состояние клеток на следующее поколение
     for (let row of this.grid) {
       for (let cell of row) {
         const { row, col } = cell;
         cell.alive = this.nextGrid[row][col];
       }
     }
+
+    // Вариант 2
+    // this.grid.forEach(row => {
+    //   row.forEach(cell => {
+    //     const { row, col } = cell;
+    //     cell.alive = this.nextGrid[row][col];
+    //   });
+    // });
 
     // обнулить буфер
     this.resetBuffer();

@@ -46,19 +46,14 @@ class Game {
     // высчитать следующее поколение клеток
     let grid = this.grid.grid;
 
+    if (!this.countAliveCells(grid)) return;
+
     this.isPlaying = true;
     this.playButton.innerText = "pause";
 
     this.timerId = setInterval(() => {
-      let alive = 0;
 
-      for (let row of grid) {
-        for (let cell of row) {
-          if (cell.alive) alive += 1;
-        }
-      }
-
-      if (!alive) {
+      if (!this.countAliveCells(grid)) {
         clearTimeout(this.timerId);
         this.reset();
         return;
@@ -137,5 +132,17 @@ class Game {
     clearTimeout(this.timerId);
 
     if (this.isPlaying) this.play();
+  }
+
+  countAliveCells(grid) {
+    let alive = 0;
+
+    for (let row of grid) {
+      for (let cell of row) {
+        if (cell.alive) alive += 1;
+      }
+    }
+
+    return alive;
   }
 }
